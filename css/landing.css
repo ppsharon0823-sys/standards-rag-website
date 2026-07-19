@@ -1,0 +1,267 @@
+/* ============================================
+   TUPDI 城市更新工具箱 - Landing Page
+   ============================================ */
+
+:root {
+    --bg: #0a0f1a;
+    --bg-card: rgba(13,19,33,0.7);
+    --bg-card-hover: rgba(20,30,55,0.85);
+    --text: #e8ecf1;
+    --text-secondary: #8b9bb4;
+    --text-muted: #5a6a82;
+    --accent: #00d4ff;
+    --accent-dim: rgba(0,212,255,0.1);
+    --border: rgba(0,212,255,0.12);
+    --border-hover: rgba(0,212,255,0.25);
+    --font: 'Inter','Noto Sans SC',-apple-system,sans-serif;
+    --radius: 16px;
+    --transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    cursor: default;
+}
+
+/* ===== 光标跟随发光 ===== */
+#cursor-glow {
+    position: fixed;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,212,255,0.08) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.3s;
+    opacity: 0;
+}
+body:hover #cursor-glow { opacity: 1; }
+
+/* ===== 背景网格 ===== */
+.bg-grid {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: 
+        linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+}
+
+/* ===== 主容器 ===== */
+.landing-main {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 24px;
+    gap: 48px;
+}
+
+/* ===== 标题区 ===== */
+.landing-hero {
+    text-align: center;
+    animation: fadeInUp 0.8s ease forwards;
+    opacity: 0;
+}
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.hero-badge {
+    display: inline-block;
+    font-size: 13px;
+    color: var(--accent);
+    border: 1px solid var(--border);
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+    background: var(--accent-dim);
+}
+
+.hero-title {
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: 4px;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-sub {
+    font-size: 14px;
+    color: var(--text-secondary);
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+}
+
+.hero-line {
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    margin: 0 auto 16px;
+}
+
+.hero-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+}
+
+/* ===== 工具网格 ===== */
+.tools-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    max-width: 720px;
+    width: 100%;
+    perspective: 1000px;
+}
+
+/* ===== 工具卡片 ===== */
+.tool-card {
+    position: relative;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    overflow: hidden;
+    transition: all var(--transition);
+    transform-style: preserve-3d;
+    animation: cardIn 0.6s ease forwards;
+    opacity: 0;
+}
+.tool-card:nth-child(1) { animation-delay: 0.1s; }
+.tool-card:nth-child(2) { animation-delay: 0.2s; }
+.tool-card:nth-child(3) { animation-delay: 0.3s; }
+.tool-card:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes cardIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.tool-card:not(.disabled):hover {
+    border-color: var(--border-hover);
+    background: var(--bg-card-hover);
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,212,255,0.15);
+}
+
+.tool-card.disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+.tool-card.disabled:hover {
+    border-color: var(--border);
+    transform: none;
+}
+
+/* 卡片发光层 */
+.card-glow {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+    opacity: 0;
+    transition: opacity 0.4s;
+    background: radial-gradient(
+        600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        rgba(0,212,255,0.08),
+        transparent 40%
+    );
+    pointer-events: none;
+}
+.tool-card:not(.disabled):hover .card-glow {
+    opacity: 1;
+}
+
+/* 卡片内容 */
+.card-icon {
+    font-size: 36px;
+    line-height: 1;
+    transition: transform 0.3s;
+}
+.tool-card:not(.disabled):hover .card-icon {
+    transform: scale(1.15) rotate(-5deg);
+}
+
+.card-content h3 {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--text);
+}
+
+.card-content p {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.card-arrow {
+    position: absolute;
+    right: 24px;
+    bottom: 28px;
+    font-size: 20px;
+    color: var(--accent);
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.3s;
+}
+.tool-card:not(.disabled):hover .card-arrow {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.card-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 10px;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    padding: 3px 10px;
+    border-radius: 12px;
+    letter-spacing: 1px;
+}
+
+/* ===== 底部 ===== */
+.landing-footer {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    animation: fadeInUp 0.8s ease 0.5s forwards;
+    opacity: 0;
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 640px) {
+    .tools-grid { grid-template-columns: 1fr; }
+    .hero-title { font-size: 28px; letter-spacing: 2px; }
+    .hero-sub { font-size: 12px; letter-spacing: 3px; }
+    .landing-main { padding: 40px 20px; gap: 36px; }
+}
