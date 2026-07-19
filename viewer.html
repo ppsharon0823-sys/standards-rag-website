@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>条文原文 - 城市更新政策智能检索</title>
+    <style>
+        :root {
+            --bg: #0a0f1a;
+            --bg-card: rgba(13,19,33,0.85);
+            --text: #e8ecf1;
+            --text-secondary: #8b9bb4;
+            --accent: #00d4ff;
+            --border: rgba(0,212,255,0.12);
+            --font: 'Inter','Noto Sans SC',-apple-system,sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.8;
+        }
+        .header {
+            position: sticky; top: 0;
+            background: rgba(10,15,26,0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 20px;
+            z-index: 100;
+        }
+        .header-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+        .header-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .header-meta {
+            font-size: 12px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .btn-close {
+            padding: 6px 14px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            background: transparent;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .btn-close:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        .content-wrap {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 24px 20px 60px;
+        }
+        .pre-text {
+            font-family: 'SF Mono','Fira Code','Noto Sans SC',monospace;
+            font-size: 14px;
+            line-height: 2.2;
+            color: var(--text);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px 28px;
+        }
+        .loading {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        .error {
+            text-align: center;
+            padding: 80px 20px;
+            color: #ff4757;
+            font-size: 14px;
+        }
+        /* 响应式 */
+        @media (max-width: 600px) {
+            .header-inner { flex-wrap: wrap; }
+            .header-title { max-width: 60vw; }
+            .content-wrap { padding: 16px 14px 40px; }
+            .pre-text { padding: 16px 18px; font-size: 13px; }
+        }
+        /* 打印友好 */
+        @media print {
+            .header { position: static; }
+            .btn-close { display: none; }
+            .pre-text { background: white; border: 1px solid #ddd; color: #333; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-inner">
+            <div class="header-title" id="doc-title">加载中...</div>
+            <div style="display:flex;align-items:center;gap:12px">
+                <span class="header-meta" id="doc-meta"></span>
+                <button class="btn-close" onclick="window.close()">✕ 关闭</button>
+            </div>
+        </div>
+    </div>
+    <div class="content-wrap">
+        <div id="content" class="loading">正在加载原文...</div>
+    </div>
+
+    <script>
+    (async function() {
+        const params = new URLSearchParams(location.search);
+        const file = params.get('file');
+        
+        if (!file) {
+            document.getElementById('content').className = 'error';
+            document.getElementById('content').textContent = '未指定文件';
+            return;
+        }
+        
+        const title = decodeURIComponent(file.replace(/\.txt$/, ''));
+        document.getElementById('doc-title').textContent = title;
+        document.title = title + ' - 条文原文';
+        
+        try {
+            const response = await fetch('files/' + encodeURIComponent(file));
+            if (!response.ok) throw new Error('加载失败: ' + response.status);
+            
+            const text = await response.text();
+            document.getElementById('doc-meta').textContent = (text.length > 1000 
+                ? (text.length/1000).toFixed(1) + 'K字 · ' 
+                : text.length + '字 · ') + '自动换行已开启';
+            
+            const pre = document.createElement('pre');
+            pre.className = 'pre-text';
+            pre.textContent = text;
+            
+            const content = document.getElementById('content');
+            content.className = '';
+            content.innerHTML = '';
+            content.appendChild(pre);
+            
+        } catch (e) {
+            document.getElementById('content').className = 'error';
+            document.getElementById('content').textContent = '❌ ' + e.message;
+        }
+    })();
+    </script>
+</body>
+</html>

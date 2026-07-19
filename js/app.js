@@ -243,9 +243,8 @@ function copyClause() {
 
 function viewFulltext() {
     if (!activeRecord) return;
-    // 构建 TXT 文件路径
-    const filename = encodeURIComponent(activeRecord.name) + '.txt';
-    const url = 'files/' + filename;
+    const filename = activeRecord.name + '.txt';
+    const url = 'viewer.html?file=' + encodeURIComponent(filename);
     window.open(url, '_blank');
 }
 
