@@ -197,39 +197,32 @@ body {
 }
 #search-input:focus {
     outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 4px var(--accent-dim), 0 0 20px rgba(0,212,255,0.1);
+    border-color: var(--border-hover);
 }
 #search-input::placeholder {
     color: var(--text-muted);
 }
 .btn-search, .btn-rag {
-    padding: 14px 28px;
-    border: none;
+    padding: 12px 24px;
+    border: 1px solid var(--border);
     border-radius: var(--radius);
-    font-size: 15px;
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
     transition: all var(--transition);
     white-space: nowrap;
-}
-.btn-search {
-    background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%);
-    color: white;
-    box-shadow: 0 3px 12px rgba(255,107,107,0.3);
+    color: var(--text-secondary);
+    background: var(--bg-card);
 }
 .btn-search:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 20px rgba(255,107,107,0.4);
-}
-.btn-rag {
-    background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
-    color: white;
-    box-shadow: 0 3px 12px rgba(0,212,255,0.2);
+    border-color: rgba(255,107,107,0.4);
+    color: #ff8e8e;
+    background: rgba(255,107,107,0.08);
 }
 .btn-rag:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 20px rgba(0,212,255,0.3);
+    border-color: var(--border-hover);
+    color: var(--accent);
+    background: var(--accent-dim);
 }
 .search-tips {
     text-align: center;
@@ -246,26 +239,25 @@ body {
     padding: 8px 0;
 }
 .cat-filter {
-    padding: 8px 16px;
+    padding: 6px 14px;
     border: 1px solid var(--border);
     border-radius: 20px;
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 12px;
+    font-weight: 400;
     cursor: pointer;
-    background: var(--bg-card);
-    color: var(--text-secondary);
+    background: transparent;
+    color: var(--text-muted);
     transition: all var(--transition);
 }
 .cat-filter:hover {
     border-color: var(--border-hover);
-    color: var(--text-primary);
-    transform: translateY(-1px);
+    color: var(--text-secondary);
 }
 .cat-filter.active {
-    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-    color: white;
-    border-color: transparent;
-    box-shadow: 0 3px 12px rgba(0,212,255,0.2);
+    background: rgba(0,212,255,0.1);
+    color: var(--accent);
+    border-color: rgba(0,212,255,0.25);
+    box-shadow: none;
 }
 
 /* ===== 主内容区 ===== */
