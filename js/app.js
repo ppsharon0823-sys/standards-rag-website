@@ -8,7 +8,7 @@ let records = [];      // 所有记录
 let allData = null;    // 完整数据（按需加载）
 let currentResults = [];
 let activeRecord = null;
-let apiConfig = { key: '', model: 'kimi-k2p6' };
+let apiConfig = { key: '', model: 'moonshot-v1-8k' };
 
 // ========== 加载数据 ==========
 async function loadData() {
