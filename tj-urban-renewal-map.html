@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>天津城更项目地图 - TUPDI</title>
+<script src="https://webapi.amap.com/maps?v=2.0&key=b0dd6ddde6f0130c89dea8f8b20f93fa"></script>
+<style>
+:root {
+    --bg: #0a0f1a;
+    --bg-card: rgba(13,19,33,0.7);
+    --text: #e8ecf1;
+    --text-secondary: #8b9bb4;
+    --accent: #00d4ff;
+    --border: rgba(0,212,255,0.12);
+    --font: 'Inter','Noto Sans SC',-apple-system,sans-serif;
+    --radius: 16px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body {
+    display:flex;
+    height:100vh;
+    font-family:var(--font);
+    background:var(--bg);
+    overflow:hidden;
+    color:var(--text);
+    position:relative;
+}
+body::before {
+    content:'';
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    background-image:
+        linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size:60px 60px;
+    mask-image:radial-gradient(ellipse at center, black 30%, transparent 70%);
+    -webkit-mask-image:radial-gradient(ellipse at center, black 30%, transparent 70%);
+}
+
+/* 左侧面板 */
+.sidebar {
+    width:380px;
+    padding:16px;
+    background:var(--bg-card);
+    border-right:1px solid var(--border);
+    backdrop-filter:blur(12px);
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    overflow-y:auto;
+    position:relative;
+    z-index:1;
+}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-track{background:transparent}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.sidebar::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+
+.header {
+    padding:10px 14px;
+    background:linear-gradient(135deg, rgba(0,212,255,0.2) 0%, rgba(0,212,255,0.05) 100%);
+    color:var(--accent);
+    border-radius:12px;
+    text-align:center;
+    box-shadow:0 0 12px rgba(0,212,255,0.15), inset 0 1px 0 rgba(255,255,255,0.05);
+    letter-spacing:1px;
+    border:1px solid var(--border);
+    font-weight:700;
+    font-size:16px;
+}
+
+.back-link {
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    color:var(--text-secondary);
+    font-size:12px;
+    text-decoration:none;
+    padding:6px 10px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:rgba(13,19,33,0.5);
+    transition:all 0.3s;
+    width:fit-content;
+}
+.back-link:hover {
+    color:var(--accent);
+    border-color:var(--accent);
+    box-shadow:0 0 8px rgba(0,212,255,0.1);
+}
+
+.filter-bar {
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+.filter-btn {
+    padding:5px 12px;
+    border:1px solid var(--border);
+    background:rgba(13,19,33,0.5);
+    border-radius:10px;
+    cursor:pointer;
+    font-size:12px;
+    color:var(--text-secondary);
+    transition:all 0.3s;
+}
+.filter-btn:hover, .filter-btn.active {
+    background:rgba(0,212,255,0.15);
+    color:var(--accent);
+    border-color:var(--accent);
+    box-shadow:0 0 8px rgba(0,212,255,0.1);
+}
+
+.project-list {
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+.project-card {
+    padding:12px;
+    background:rgba(13,19,33,0.5);
+    border-radius:12px;
+    border:1px solid var(--border);
+    cursor:pointer;
+    transition:all 0.3s;
+}
+.project-card:hover {
+    border-color:var(--accent);
+    box-shadow:0 0 12px rgba(0,212,255,0.08);
+}
+.project-card.active {
+    border-color:var(--accent);
+    background:rgba(0,212,255,0.1);
+}
+.project-name {
+    font-size:14px;
+    font-weight:600;
+    color:var(--text);
+    margin-bottom:4px;
+}
+.project-meta {
+    font-size:11px;
+    color:var(--text-secondary);
+    line-height:1.6;
+}
+.project-tag {
+    display:inline-block;
+    padding:2px 8px;
+    border-radius:4px;
+    font-size:10px;
+    margin-top:6px;
+    margin-right:4px;
+}
+.tag-urban {background:rgba(0,212,255,0.15);color:var(--accent)}
+.tag-renewal {background:rgba(82,196,26,0.15);color:#52c41a}
+.tag-industry {background:rgba(250,140,22,0.15);color:#fa8c16}
+.tag-residential {background:rgba(235,47,150,0.15);color:#eb2f96}
+
+.stats-bar {
+    display:flex;
+    gap:10px;
+    padding:10px;
+    background:rgba(13,19,33,0.5);
+    border-radius:10px;
+    border:1px solid var(--border);
+}
+.stat-item {
+    flex:1;
+    text-align:center;
+}
+.stat-num {
+    font-size:20px;
+    font-weight:bold;
+    color:var(--accent);
+}
+.stat-label {
+    font-size:10px;
+    color:var(--text-secondary);
+    margin-top:2px;
+}
+
+#map {
+    flex:1;
+    position:relative;
+    z-index:1;
+}
+
+/* 信息窗口 */
+.info-window {
+    padding:8px;
+    min-width:220px;
+}
+.info-title {
+    font-size:14px;
+    font-weight:bold;
+    color:#333;
+    margin-bottom:6px;
+    border-bottom:1px solid #eee;
+    padding-bottom:4px;
+}
+.info-row {
+    font-size:12px;
+    color:#666;
+    line-height:1.8;
+}
+.info-row span {
+    color:#999;
+}
+</style>
+</head>
+<body>
+<div class="sidebar">
+    <div class="header">📍 天津城更项目地图</div>
+    <a href="index.html" class="back-link">← 返回工具箱主页</a>
+
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-num" id="statTotal">0</div>
+            <div class="stat-label">项目总数</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num" id="statTypes">0</div>
+            <div class="stat-label">类型种类</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num" id="statAreas">0</div>
+            <div class="stat-label">覆盖区域</div>
+        </div>
+    </div>
+
+    <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all" onclick="filterProjects('all')">全部</button>
+        <button class="filter-btn" data-filter="城市更新" onclick="filterProjects('城市更新')">城市更新</button>
+        <button class="filter-btn" data-filter="土地整理" onclick="filterProjects('土地整理')">土地整理</button>
+        <button class="filter-btn" data-filter="产业园区" onclick="filterProjects('产业园区')">产业园区</button>
+        <button class="filter-btn" data-filter="基础设施" onclick="filterProjects('基础设施')">基础设施</button>
+    </div>
+
+    <div class="project-list" id="projectList"></div>
+</div>
+<div id="map"></div>
+
+<script>
+// 天津城市更新项目数据（示例，可扩展）
+const projects = [
+    {
+        id: 1,
+        name: '郁江新里城市更新项目',
+        type: '城市更新',
+        district: '河西区',
+        address: '天津市河西区郁江道沿线',
+        lng: 117.22,
+        lat: 39.08,
+        status: '策划阶段',
+        scale: '约50公顷',
+        desc: '文创园区+住宅综合更新，原工业区改造',
+        tagClass: 'tag-renewal'
+    },
+    {
+        id: 2,
+        name: '北辰区土地整理中心策划项目',
+        type: '土地整理',
+        district: '北辰区',
+        address: '天津市北辰区',
+        lng: 117.13,
+        lat: 39.22,
+        status: '招标中',
+        scale: '待定',
+        desc: '北辰区2026年策划方案编制',
+        tagClass: 'tag-urban'
+    },
+    {
+        id: 3,
+        name: '西青土地整理中心项目',
+        type: '土地整理',
+        district: '西青区',
+        address: '天津市西青区',
+        lng: 117.01,
+        lat: 39.14,
+        status: '已完成',
+        scale: '245万中标',
+        desc: '西青区土地整理策划',
+        tagClass: 'tag-urban'
+    },
+    {
+        id: 4,
+        name: '子牙经开集团项目',
+        type: '产业园区',
+        district: '静海区',
+        address: '天津市静海区子牙镇',
+        lng: 116.92,
+        lat: 38.93,
+        status: '运营中',
+        scale: '大型园区',
+        desc: '子牙经济技术开发区',
+        tagClass: 'tag-industry'
+    },
+    {
+        id: 5,
+        name: '天津城投集团城市更新',
+        type: '城市更新',
+        district: '多区域',
+        address: '天津市中心城区',
+        lng: 117.20,
+        lat: 39.12,
+        status: '推进中',
+        scale: '多片区',
+        desc: '天津城市更新建设发展有限公司主导',
+        tagClass: 'tag-renewal'
+    },
+    {
+        id: 6,
+        name: '解放南路地区城市更新',
+        type: '城市更新',
+        district: '河西区',
+        address: '天津市河西区解放南路',
+        lng: 117.23,
+        lat: 39.09,
+        status: '实施中',
+        scale: '大型片区',
+        desc: '解放南路沿线街区更新改造',
+        tagClass: 'tag-renewal'
+    },
+    {
+        id: 7,
+        name: '天津环城城市基础设施投资',
+        type: '基础设施',
+        district: '环城四区',
+        address: '天津市环城四区',
+        lng: 117.25,
+        lat: 39.18,
+        status: '运营中',
+        scale: '跨区域',
+        desc: '环城区域基础设施投资与建设',
+        tagClass: 'tag-residential'
+    },
+    {
+        id: 8,
+        name: '泰安道历史文化街区',
+        type: '城市更新',
+        district: '和平区',
+        address: '天津市和平区泰安道',
+        lng: 117.20,
+        lat: 39.11,
+        status: '已完成',
+        scale: '历史街区',
+        desc: '历史文化街区保护与更新',
+        tagClass: 'tag-renewal'
+    }
+];
+
+let map;
+let markers = [];
+let currentFilter = 'all';
+
+function initMap() {
+    map = new AMap.Map('map', {
+        zoom: 11,
+        center: [117.20, 39.13],
+        mapStyle: 'amap://styles/dark'
+    });
+
+    renderProjects();
+    updateStats();
+}
+
+function renderProjects() {
+    const listEl = document.getElementById('projectList');
+    listEl.innerHTML = '';
+
+    const filtered = currentFilter === 'all'
+        ? projects
+        : projects.filter(p => p.type === currentFilter);
+
+    filtered.forEach(proj => {
+        const card = document.createElement('div');
+        card.className = 'project-card';
+        card.dataset.id = proj.id;
+        card.innerHTML = `
+            <div class="project-name">${proj.name}</div>
+            <div class="project-meta">
+                📍 ${proj.district} · ${proj.address}<br>
+                📐 ${proj.scale} · 📋 ${proj.status}
+            </div>
+            <span class="project-tag ${proj.tagClass}">${proj.type}</span>
+        `;
+        card.onclick = () => focusProject(proj);
+        listEl.appendChild(card);
+    });
+
+    renderMarkers(filtered);
+}
+
+function renderMarkers(projectList) {
+    // 清除旧标记
+    markers.forEach(m => map.remove(m));
+    markers = [];
+
+    projectList.forEach(proj => {
+        const marker = new AMap.Marker({
+            position: [proj.lng, proj.lat],
+            title: proj.name,
+            label: {
+                content: proj.name,
+                direction: 'top',
+                offset: new AMap.Pixel(0, -5)
+            }
+        });
+
+        const infoContent = `
+            <div class="info-window">
+                <div class="info-title">${proj.name}</div>
+                <div class="info-row"><span>类型：</span>${proj.type}</div>
+                <div class="info-row"><span>区域：</span>${proj.district}</div>
+                <div class="info-row"><span>规模：</span>${proj.scale}</div>
+                <div class="info-row"><span>状态：</span>${proj.status}</div>
+                <div class="info-row"><span>描述：</span>${proj.desc}</div>
+            </div>
+        `;
+
+        const infoWindow = new AMap.InfoWindow({
+            content: infoContent,
+            offset: new AMap.Pixel(0, -30)
+        });
+
+        marker.on('click', () => {
+            infoWindow.open(map, marker.getPosition());
+            highlightCard(proj.id);
+        });
+
+        marker.setMap(map);
+        markers.push(marker);
+    });
+}
+
+function focusProject(proj) {
+    map.setZoomAndCenter(14, [proj.lng, proj.lat]);
+    highlightCard(proj.id);
+
+    // 打开信息窗
+    const marker = markers.find(m => {
+        const pos = m.getPosition();
+        return Math.abs(pos.lng - proj.lng) < 0.0001 && Math.abs(pos.lat - proj.lat) < 0.0001;
+    });
+    if (marker) marker.emit('click');
+}
+
+function highlightCard(id) {
+    document.querySelectorAll('.project-card').forEach(c => c.classList.remove('active'));
+    const card = document.querySelector(`.project-card[data-id="${id}"]`);
+    if (card) {
+        card.classList.add('active');
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+}
+
+function filterProjects(type) {
+    currentFilter = type;
+
+    // 更新按钮状态
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.filter === type);
+    });
+
+    renderProjects();
+}
+
+function updateStats() {
+    document.getElementById('statTotal').textContent = projects.length;
+    const types = new Set(projects.map(p => p.type));
+    document.getElementById('statTypes').textContent = types.size;
+    const areas = new Set(projects.map(p => p.district));
+    document.getElementById('statAreas').textContent = areas.size;
+}
+
+window.onload = initMap;
+</script>
+</body>
+</html>
