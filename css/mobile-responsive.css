@@ -1,0 +1,272 @@
+/* ============================================
+   Mobile Responsive - 城市更新工具箱全站适配
+   ============================================ */
+
+/* ===== 通用移动端适配 (< 768px) ===== */
+@media (max-width: 768px) {
+    /* 顶部导航 */
+    .top-nav {
+        height: auto;
+        min-height: 48px;
+        flex-wrap: wrap;
+        padding: 8px 12px;
+        gap: 8px;
+    }
+    .nav-brand {
+        font-size: 13px;
+        width: 100%;
+        margin-bottom: 4px;
+    }
+    .nav-tabs {
+        flex-wrap: wrap;
+        gap: 4px;
+        width: 100%;
+    }
+    .nav-tab {
+        padding: 6px 12px;
+        font-size: 12px;
+        border-radius: 8px;
+    }
+    .back-link {
+        font-size: 11px;
+        padding: 4px 8px;
+        margin-left: auto;
+    }
+
+    /* 主内容区 */
+    .main-content {
+        margin-top: 88px;
+        flex-direction: column;
+    }
+
+    /* 侧边栏 */
+    .sidebar,
+    .awards-sidebar {
+        width: 100% !important;
+        max-height: 45vh;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 12px;
+    }
+
+    /* 地图区域 */
+    #map {
+        height: 55vh;
+        min-height: 300px;
+    }
+
+    /* 筛选栏 */
+    .filter-bar,
+    .sub-filter {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        gap: 6px;
+        padding-bottom: 4px;
+        -webkit-overflow-scrolling: touch;
+    }
+    .filter-bar::-webkit-scrollbar,
+    .sub-filter::-webkit-scrollbar {
+        height: 2px;
+    }
+    .filter-btn,
+    .sub-filter-btn {
+        flex-shrink: 0;
+        padding: 5px 10px;
+        font-size: 11px;
+    }
+
+    /* 统计栏 */
+    .stats-bar {
+        padding: 8px;
+    }
+    .stat-num {
+        font-size: 18px;
+    }
+    .stat-label {
+        font-size: 9px;
+    }
+
+    /* 项目卡片 */
+    .project-card {
+        padding: 8px 10px;
+    }
+    .project-name {
+        font-size: 12px;
+    }
+    .project-meta,
+    .project-desc {
+        font-size: 10px;
+    }
+
+    /* 类别分组 */
+    .category-header {
+        padding: 8px 10px;
+    }
+    .category-title {
+        font-size: 12px;
+    }
+
+    /* 信息窗口 */
+    .info-window {
+        min-width: 180px;
+        padding: 6px;
+    }
+    .info-title {
+        font-size: 13px;
+    }
+    .info-row {
+        font-size: 11px;
+    }
+
+    /* 奖项页面 */
+    .awards-page {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+    }
+    .awards-sidebar {
+        max-height: 35vh;
+    }
+    .awards-content {
+        padding: 16px;
+    }
+    .award-card {
+        padding: 10px 12px;
+    }
+    .award-card-title {
+        font-size: 13px;
+    }
+    .award-year-header {
+        font-size: 15px;
+    }
+
+    /* 标准规范页 */
+    .content-panel {
+        padding: 16px;
+    }
+    .page-title {
+        font-size: 18px;
+        margin-bottom: 16px;
+    }
+    .std-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    .std-card {
+        padding: 12px;
+    }
+    .summary-cards {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    .summary-card {
+        padding: 12px;
+    }
+    .summary-num {
+        font-size: 22px;
+    }
+
+    /* 出版物 */
+    .book-card {
+        flex-direction: column;
+        gap: 12px;
+        padding: 12px;
+    }
+    .book-cover {
+        width: 60px;
+        height: 80px;
+        font-size: 24px;
+    }
+    .book-title {
+        font-size: 14px;
+    }
+
+    /* 返回链接 */
+    .back-link {
+        display: none;
+    }
+}
+
+/* ===== 超小屏幕适配 (< 480px) ===== */
+@media (max-width: 480px) {
+    .nav-brand {
+        font-size: 12px;
+    }
+    .nav-tab {
+        padding: 5px 8px;
+        font-size: 11px;
+    }
+
+    .hero-title {
+        font-size: 24px !important;
+    }
+    .hero-sub {
+        font-size: 11px !important;
+    }
+
+    .sidebar {
+        max-height: 40vh;
+    }
+    #map {
+        height: 60vh;
+    }
+
+    .project-card {
+        padding: 6px 8px;
+    }
+    .project-name {
+        font-size: 11px;
+    }
+
+    .stats-bar {
+        gap: 6px;
+    }
+    .stat-num {
+        font-size: 16px;
+    }
+
+    .summary-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .summary-num {
+        font-size: 20px;
+    }
+    .summary-label {
+        font-size: 10px;
+    }
+
+    .award-card-title {
+        font-size: 12px;
+    }
+    .award-level-badge {
+        font-size: 10px;
+        padding: 1px 6px;
+    }
+}
+
+/* ===== 横屏手机适配 ===== */
+@media (max-height: 500px) and (orientation: landscape) {
+    .top-nav {
+        min-height: 40px;
+        padding: 4px 12px;
+    }
+    .main-content {
+        margin-top: 44px;
+    }
+    .sidebar {
+        max-height: 100%;
+        width: 280px !important;
+    }
+}
+
+/* ===== 平板适配 (768px - 1024px) ===== */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .sidebar,
+    .awards-sidebar {
+        width: 320px !important;
+    }
+    .filter-btn,
+    .sub-filter-btn {
+        padding: 4px 10px;
+        font-size: 11px;
+    }
+}
